@@ -1,4 +1,5 @@
 import Head from 'next/head'
+import Link from 'next/link'
 import Image from 'next/image'
 import styles from '../styles/Home.module.css'
 
@@ -23,26 +24,31 @@ export default function Home() {
       <Head>
         <title>Home | MyBoard</title>
       </Head>
-      <table className ="table table-striped">
-        <thead>
-          <tr>
-            <th>번호</th>
-            <th>제목</th>
-            <th>내용</th>
-            <th>작성자</th>
-          </tr>
-        </thead>
-        <tbody>
-          {posts.map((post)=> 
-            <tr key={post.id}>
-              <td>{post.id}</td>
-              <td>{post.title}</td>
-              <td>{post.content}</td>
-              <td>{post.author}</td>
+      <div className="container">
+        <table className ="table table-striped">
+          <thead>
+            <tr>
+              <th>번호</th>
+              <th>제목</th>
+              <th>내용</th>
+              <th>작성자</th>
             </tr>
-          )}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {posts.map((post)=> 
+              <tr key={post.id}>
+                <td>{post.id}</td>
+                <td>{post.title}</td>
+                <td>{post.content}</td>
+                <td>{post.author}</td>
+              </tr>
+            )}
+          </tbody>
+        </table>
+        <Link href="/write">
+          <button type="button" className="btn btn-outline-info">글쓰기</button>
+        </Link>
+      </div>
     </div>
   )
 }

@@ -1,4 +1,4 @@
-import Gnb from "./GnB"
+import Gnb from "./Gnb"
 export default function Top() {
     return (
         <div>

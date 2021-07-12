@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/header :: header">
+    <title>MyBoard</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+</head>
+<body>
+
+<div class="container">
+    <div th:replace="fragments/bodyHeader :: bodyHeader"></div>
+
+    <table class="table table-hover">
+        <thead>
+            <tr>
+                <th>번호</th>
+                <th>제목</th>
+                <th>작성자</th>
+                <th>날짜</th>
+                <th>조회수</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>1</td>
+                <td>as</td>
+                <td>dfa</td>
+                <td>2020-02-02</td>
+                <td>100</td>
+            </tr>
+            <tr th:each="post : ${posts}">
+
+                <td th:text="${post.id}"></td>
+                <td>
+                    <a th:href="@{/posts/{id} (id=${post.id})}"  th:text="${post.title}"></a>
+                </td>
+                <td th:text="${post.author}"></td>
+                <td th:text="${post.dateTime}"></td>
+                <td th:text="${post.viewCount}"></td>
+
+            </tr>
+        </tbody>
+    </table>
+    <hr/>
+    <a role="button" class="btn btn-outline-info" href="/posts/new" >글쓰기</a>
+    <div th:replace="fragments/footer :: footer" />
+</div>
+<script src = "/js/jquery.min.js"></script>
+<script src = "/js/bootstrap.min.js"></script>
+</body>
+</html>

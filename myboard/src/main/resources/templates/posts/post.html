@@ -1,0 +1,44 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/header :: header"/>
+<body>
+<div class="container">
+    <div th:replace="fragments/bodyHeader :: bodyHeader"/>
+    <div class="panel panel-default">
+        <div class="panel-heading" style="display: flex; justify-content:space-between">
+            <div>
+                <div th:text="${post.author}" style="font-size: 14px">
+
+                </div>
+                <div th:text="${post.dateTime}" style="font-size: 12px; color:#ccc">
+
+                </div>
+            </div>
+            <div>
+                <a th:href="@{/posts/{id}/edit (id=${post.id})}" >수정</a>
+                <a th:href="@{/posts/{id}/delete (id=${post.id})}" >삭제</a>
+            </div>
+        </div>
+        <div class="panel-body">
+            <h2 class="panel-title" th:text="${post.title}"></h2>
+            <hr/>
+            <article class="content-text" th:text="${post.content}"></article>
+        </div>
+    </div>
+    <div class="panel panel-default">
+        <ul class="list-group">
+            <li class="list-group-item note-title">
+                <h3 class="panel-title">댓글</h3>
+            </li>
+            <li class="list-group-item">
+                <div class="panel-body">
+                    <h5 class="text-center">로그인을 하시면 댓글을 등록할 수 있습니다.</h5>
+                </div>
+            </li>
+        </ul>
+    </div>
+    <br/>
+    <div th:replace="fragments/footer :: footer"/>
+</div> <!-- /container -->
+</body>
+</html>

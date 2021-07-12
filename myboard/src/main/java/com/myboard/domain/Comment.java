@@ -1,7 +1,6 @@
 package com.myboard.domain;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.myboard.dto.PostSaveRequestDto;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -18,39 +17,32 @@ import java.util.List;
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @EntityListeners(AuditingEntityListener.class)
-public class Posts {
-
+public class Comment {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private long id;
 
     @Column(length = 500, nullable = false)
-    private String title;
-
-    @Column(columnDefinition = "TEXT", nullable = false)
     private String content;
 
     private String author;
 
-    int viewCount;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "posts_id")
+    private Posts posts;
 
-    @OneToMany(mappedBy = "posts", cascade = CascadeType.ALL)
-    private List<Comment> comments = new ArrayList<>();
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "super_comment_id")
+    private Comment superComment;
+
+    @OneToMany(mappedBy = "superComment", cascade = CascadeType.ALL)
+    private List<Comment> subComment = new ArrayList<>();
+
+    private Integer level;
 
     @CreatedDate
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd hh:mm:ss")
     private LocalDateTime dateTime;
 
-    @Builder
-    public Posts(String title, String content, String author) {
-        this.title = title;
-        this.content = content;
-        this.author = author;
-    }
-
-    public void updatePosts(PostSaveRequestDto form) {
-        this.title= form.getTitle();
-        this.content = form.getContent();
-        this.author = form.getAuthor();;
-    }
+    private Boolean isDeleted;
 }
