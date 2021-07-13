@@ -1,9 +1,13 @@
 <!DOCTYPE HTML>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <div class="header" th:fragment="bodyHeader">
-    <ul class="nav nav-pills pull-right">
-        <li><a href="/">Home</a></li>
-    </ul>
     <a href="/"><h3 class="text-muted">MyBoard</h3></a>
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="/">Home</a></li>
+            <li sec:authorize-expr="!isAuthenticated()" class="breadcrumb-item"><a href="/user/login">Login</a></li>
+            <li sec:authorize-expr="isAuthenticated()" class="breadcrumb-item"><a href="/user/logout">Logout</a></li>
+        </ol>
+    </nav>
 </div>
 </html>

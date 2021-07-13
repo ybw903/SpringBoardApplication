@@ -1,13 +1,14 @@
 package com.myboard.domain;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-import com.myboard.dto.PostSaveRequestDto;
+import com.myboard.dto.PostSaveForm;
+import com.myboard.dto.PostUpdateForm;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -30,27 +31,33 @@ public class Posts {
     @Column(columnDefinition = "TEXT", nullable = false)
     private String content;
 
-    private String author;
 
     int viewCount;
+
+    @ManyToOne
+    @JoinColumn(name="user_id")
+    private User author;
 
     @OneToMany(mappedBy = "posts", cascade = CascadeType.ALL)
     private List<Comment> comments = new ArrayList<>();
 
     @CreatedDate
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd hh:mm:ss")
-    private LocalDateTime dateTime;
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    private LocalDateTime createdDateTime;
 
     @Builder
-    public Posts(String title, String content, String author) {
+    public Posts(String title, String content, User author) {
         this.title = title;
         this.content = content;
         this.author = author;
     }
 
-    public void updatePosts(PostSaveRequestDto form) {
+    public void updatePosts(PostUpdateForm form) {
         this.title= form.getTitle();
         this.content = form.getContent();
-        this.author = form.getAuthor();;
+    }
+
+    public void increaseViewCount() {
+        viewCount++;
     }
 }

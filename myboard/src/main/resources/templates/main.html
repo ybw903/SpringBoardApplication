@@ -33,8 +33,8 @@
                 <td>
                     <a th:href="@{/posts/{id} (id=${post.id})}"  th:text="${post.title}"></a>
                 </td>
-                <td th:text="${post.author}"></td>
-                <td th:text="${post.dateTime}"></td>
+                <td th:text="${post.getAuthor().getEmail()}"></td>
+                <td th:text="${#temporals.format(post.createdDateTime, 'yyyy-MM-dd HH:mm:ss')}"></td>
                 <td th:text="${post.viewCount}"></td>
 
             </tr>
