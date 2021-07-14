@@ -24,6 +24,7 @@ public class UserSecurityService implements UserDetailsService {
     public User signUpUser(SignUpForm signUpForm) {
         BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
         signUpForm.setPassword(passwordEncoder.encode(signUpForm.getPassword()));
+
         return userRepository.save(signUpForm.toEntity(signUpForm));
     }
 
@@ -32,4 +33,5 @@ public class UserSecurityService implements UserDetailsService {
         User user = userRepository.findByEmail(email).orElseThrow(()-> new UsernameNotFoundException("사용자 이메일을 찾을 수 없습니다."));
         return new PrincipalDetails(user);
     }
+
 }

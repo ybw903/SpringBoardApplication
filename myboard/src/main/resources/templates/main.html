@@ -5,12 +5,12 @@
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 </head>
 <body>
+<div th:replace="fragments/bodyHeader :: bodyHeader"></div>
+<div class="content-wrapper">
+    <div class="container">
 
-<div class="container">
-    <div th:replace="fragments/bodyHeader :: bodyHeader"></div>
-
-    <table class="table table-hover">
-        <thead>
+        <table class="table table-hover">
+            <thead>
             <tr>
                 <th>번호</th>
                 <th>제목</th>
@@ -18,8 +18,8 @@
                 <th>날짜</th>
                 <th>조회수</th>
             </tr>
-        </thead>
-        <tbody>
+            </thead>
+            <tbody>
             <tr>
                 <td>1</td>
                 <td>as</td>
@@ -38,12 +38,13 @@
                 <td th:text="${post.viewCount}"></td>
 
             </tr>
-        </tbody>
-    </table>
-    <hr/>
-    <a role="button" class="btn btn-outline-info" href="/posts/new" >글쓰기</a>
-    <div th:replace="fragments/footer :: footer" />
+            </tbody>
+        </table>
+        <hr/>
+        <a role="button" class="btn btn-outline-info" href="/posts/new" >글쓰기</a>
+    </div>
 </div>
+<div th:replace="fragments/footer :: footer" />
 <script src = "/js/jquery.min.js"></script>
 <script src = "/js/bootstrap.min.js"></script>
 </body>

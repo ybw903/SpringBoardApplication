@@ -4,7 +4,7 @@ import com.myboard.domain.Posts;
 import com.myboard.domain.PostsRepository;
 import com.myboard.domain.User;
 import com.myboard.domain.UserRepository;
-import com.myboard.dto.PostSaveForm;
+import com.myboard.dto.PostForm;
 import com.myboard.dto.PostUpdateForm;
 import com.myboard.exception.PostsNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -13,7 +13,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -26,11 +25,16 @@ public class PostsServiceImpl implements PostsService{
     private final UserRepository userRepository;
 
     @Override
-    public Posts add(PostSaveForm form, String email) {
+    @Transactional
+    public Posts add(PostForm form, String email) {
         User user = userRepository.findByEmail(email).orElseThrow(
                 () -> new UsernameNotFoundException("사용자 이메일을 찾을 수 없습니다."));
-        form.setAuthor(user);
-        return postsRepository.save(form.toEntity());
+        Posts posts = Posts.builder()
+                        .title(form.getTitle())
+                        .content(form.getContent())
+                        .author(user)
+                        .build();
+        return postsRepository.save(posts);
     }
 
     @Override
@@ -57,11 +61,10 @@ public class PostsServiceImpl implements PostsService{
 
     @Override
     @Transactional
-    public Posts update(Long id, PostUpdateForm form) {
-        Optional<Posts> optionalPosts = postsRepository.findById(id);
+    public Posts update(Long id, PostUpdateForm postUpdateForm) {
         Posts posts = postsRepository.findById(id).orElseThrow(
                 () -> new PostsNotFoundException("update: Posts not found by :" + id));
-        posts.updatePosts(form);
+        posts.updatePosts(postUpdateForm);
         return postsRepository.save(posts);
     }
 

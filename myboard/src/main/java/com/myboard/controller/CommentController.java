@@ -1,14 +1,17 @@
 package com.myboard.controller;
 
-import com.myboard.dto.CommentCreateDto;
 import com.myboard.dto.CommentSaveForm;
 import com.myboard.security.PrincipalDetails;
 import com.myboard.service.CommentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+
+
+import javax.validation.Valid;
 
 @Controller
 @RequiredArgsConstructor
@@ -18,8 +21,9 @@ public class CommentController {
 
     @PostMapping("/posts/{postsId}/comments/new")
     public String saveComment(@PathVariable("postsId")Long postId,
-                              CommentSaveForm commentSaveForm,
+                              @Valid CommentSaveForm commentSaveForm, BindingResult result,
                               @AuthenticationPrincipal PrincipalDetails principalDetails) {
+
         commentService.createComment(commentSaveForm,postId, principalDetails.getUsername());
         return "redirect:/posts/"+postId;
     }

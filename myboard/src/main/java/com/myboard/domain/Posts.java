@@ -1,6 +1,6 @@
 package com.myboard.domain;
 
-import com.myboard.dto.PostSaveForm;
+import com.myboard.dto.PostForm;
 import com.myboard.dto.PostUpdateForm;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -52,9 +52,9 @@ public class Posts {
         this.author = author;
     }
 
-    public void updatePosts(PostUpdateForm form) {
-        this.title= form.getTitle();
-        this.content = form.getContent();
+    public void updatePosts(PostUpdateForm postUpdateForm) {
+        this.title= postUpdateForm.getTitle();
+        this.content = postUpdateForm.getContent();
     }
 
     public void increaseViewCount() {

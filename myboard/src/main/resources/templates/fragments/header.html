@@ -8,11 +8,13 @@
           integrity="sha384-
                   ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
           crossorigin="anonymous">
-    <link href="/css/jumbotron-narrow.css" rel="stylesheet">
 
     <title>MyBoard!</title>
 
     <style>
+        body {
+            height: 100%;
+        }
         .panel {
             margin-bottom: 20px;
             background-color: #fff;
@@ -53,6 +55,28 @@
 
         .content-text {
             min-height:300px;
+        }
+
+        @media(min-width: 576px)
+        .content-wrapper {
+            padding: 4rem 2rem;
+        }
+
+        .content-wrapper {
+            padding: 2rem 1rem;
+            margin-bottom: 2rem
+        }
+
+        .footer {
+            position:absolute;
+            bottom:0;
+            width:100%;
+            height:70px;
+        }
+
+        .auth-form {
+            max-width: 553px;
+            width: 75%;
         }
 
     </style>
