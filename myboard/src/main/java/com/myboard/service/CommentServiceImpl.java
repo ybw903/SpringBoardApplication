@@ -29,7 +29,7 @@ public class CommentServiceImpl implements CommentService{
 
         CommentCreateDto commentCreateDto = null;
         if(commentSaveForm.getCommentId() != null) {
-            long supCommentId = Long.parseLong(commentSaveForm.getCommentId());
+            long supCommentId =commentSaveForm.getCommentId();
             Comment supComment = commentRepository.getOne(supCommentId);
             commentCreateDto = new CommentCreateDto(commentSaveForm.getContent(), supComment);
         } else {
@@ -44,16 +44,20 @@ public class CommentServiceImpl implements CommentService{
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Comment get(Long id) {
         return commentRepository.findById(id).orElseThrow(() -> new CommentNotFoundException("not found comment :" + id));
     }
 
     @Override
-    public List<Comment> getAll() {
-        return commentRepository.findAll();
+    @Transactional(readOnly = true)
+    public List<Comment> getCommentsWithPosts(Long postsId) {
+        Posts posts = postsRepository.findById(postsId).orElseThrow(() -> new PostsNotFoundException("delete: Posts not found by : " + postsId));
+        return commentRepository.findAllByPosts(posts);
     }
 
     @Override
+    @Transactional
     public Comment update(Long id, CommentUpdateForm commentUpdateForm) {
         Comment comment = commentRepository.findById(id).orElseThrow(() -> new CommentNotFoundException("not found comment :" + id));
         comment.updateComment(commentUpdateForm);
@@ -61,6 +65,7 @@ public class CommentServiceImpl implements CommentService{
     }
 
     @Override
+    @Transactional
     public boolean delete(Long id) {
         if(!commentRepository.findById(id).isPresent())
             throw new CommentNotFoundException("not found comment :" + id);

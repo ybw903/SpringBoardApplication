@@ -9,5 +9,10 @@ import javax.validation.constraints.NotBlank;
 public class CommentSaveForm {
     @NotBlank(message = "댓글을 입력해주세요.")
     private String content;
-    private String commentId;
+    private Long commentId;
+
+    @Override
+    public String toString() {
+        return "[content]: " + content + ", [commentId]: " + (commentId==null?"null":commentId.toString());
+    }
 }

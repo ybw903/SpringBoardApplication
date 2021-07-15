@@ -9,6 +9,7 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -22,6 +23,7 @@ import java.util.List;
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @EntityListeners(AuditingEntityListener.class)
+@Slf4j
 public class Comment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -45,13 +47,13 @@ public class Comment {
     @OneToMany(mappedBy = "superComment", cascade = CascadeType.ALL)
     private List<Comment> subComment = new ArrayList<>();
 
-    private Integer level;
+    private int level;
 
     @CreatedDate
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime createdDateTime;
 
-    private Boolean isDeleted;
+    private boolean isDeleted;
 
     public void updateComment(CommentUpdateForm commentUpdateForm) {
         this.content = commentUpdateForm.getContent();
@@ -64,7 +66,8 @@ public class Comment {
             newComment.level = 1;
         } else {
             Comment supComment = commentCreateDto.getComment();
-            if(!supComment.isDeleted) {
+            log.info(supComment.toString());
+            if(supComment.isDeleted) {
                 throw new CommentGoneException("SuperComment is already deleted");
             }
             newComment.level = supComment.getLevel()+1;
@@ -74,6 +77,15 @@ public class Comment {
         newComment.content = commentCreateDto.getContent();
         newComment.posts = posts;
         newComment.author = author;
+        newComment.isDeleted = false;
         return newComment;
+    }
+
+    @Override
+    public String toString() {
+        return "[commentId: " + (id == null? "null" :id )+
+                ", content: " + (content == null? "null" :content ) +
+                ", level: " + (level == 0? "null" :level ) +
+                " isDeleted: " + isDeleted;
     }
 }

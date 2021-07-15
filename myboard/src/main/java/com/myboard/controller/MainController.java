@@ -1,6 +1,7 @@
 package com.myboard.controller;
 
 import com.myboard.domain.Posts;
+import com.myboard.dto.PostResponseDto;
 import com.myboard.service.PostsService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;

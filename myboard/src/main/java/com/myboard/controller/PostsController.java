@@ -1,11 +1,11 @@
 package com.myboard.controller;
 
 import com.myboard.domain.Posts;
-import com.myboard.dto.CommentSaveForm;
-import com.myboard.dto.PostForm;
-import com.myboard.dto.PostUpdateForm;
+import com.myboard.dto.*;
 import com.myboard.security.PrincipalDetails;
+import com.myboard.service.CommentService;
 import com.myboard.service.PostsService;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
@@ -19,17 +19,18 @@ import javax.validation.Valid;
 @Controller
 @Slf4j
 @SessionAttributes("postUpdateForm")
+@RequiredArgsConstructor
 public class PostsController {
 
     private final PostsService postsService;
-
-    public PostsController(PostsService postsService) {
-        this.postsService = postsService;
-    }
+    private final CommentService commentService;
 
     @GetMapping("/posts/{id}")
     public String readPost(@PathVariable("id") Long postId,Model model) {
-        model.addAttribute("post", postsService.read(postId));
+        model.addAttribute("post", PostResponseDto.of(postsService.read(postId)));
+        model.addAttribute("comments",
+                CommentResponseDto.collectionOf(commentService.getCommentsWithPosts(postId))
+        );
         model.addAttribute("commentSaveForm", new CommentSaveForm());
         return "posts/post";
     }
