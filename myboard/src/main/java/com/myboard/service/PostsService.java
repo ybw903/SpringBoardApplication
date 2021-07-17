@@ -12,6 +12,7 @@ public interface PostsService {
     Posts findPost(Long id);
     Posts read(Long id);
     Page<Posts> getPosts(Pageable pageable);
+    Page<Posts> getPostsWithTitle( String title,Pageable pageable);
     Posts update(Long id, PostUpdateForm postUpdateForm);
     boolean delete(Long id);
 }

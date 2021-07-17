@@ -41,7 +41,13 @@
             </tbody>
         </table>
         <hr/>
-        <a role="button" class="btn btn-outline-info" href="/posts/new" >글쓰기</a>
+        <div class="d-flex justify-content-between">
+            <a role="button" class="btn btn-outline-info" href="/posts/new" >글쓰기</a>
+            <form class="form-inline my-2 my-lg-0" th:action="@{/search}" method="get">
+                <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search" th:name="keyword">
+                <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+            </form>
+        </div>
         <nav >
             <ul class="pagination justify-content-center"
                 th:with="start= ${T(Math).floor(posts.number/10)*10 +1},
