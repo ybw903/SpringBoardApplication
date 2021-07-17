@@ -1,6 +1,5 @@
 package com.myboard.domain;
 
-import com.myboard.dto.PostForm;
 import com.myboard.dto.PostUpdateForm;
 import lombok.AccessLevel;
 import lombok.Builder;

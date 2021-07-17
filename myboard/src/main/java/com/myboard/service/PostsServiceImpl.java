@@ -8,6 +8,9 @@ import com.myboard.dto.PostForm;
 import com.myboard.dto.PostUpdateForm;
 import com.myboard.exception.PostsNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -55,8 +58,10 @@ public class PostsServiceImpl implements PostsService{
 
     @Override
     @Transactional(readOnly = true)
-    public List<Posts> getAll() {
-        return postsRepository.findAll();
+    public Page<Posts> getPosts(Pageable pageable) {
+        int page = (pageable.getPageNumber()==0?0:(pageable.getPageNumber())-1);
+        pageable = PageRequest.of(page, 10);
+        return postsRepository.findAll(pageable);
     }
 
     @Override

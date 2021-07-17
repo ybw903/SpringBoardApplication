@@ -42,6 +42,29 @@
         </table>
         <hr/>
         <a role="button" class="btn btn-outline-info" href="/posts/new" >글쓰기</a>
+        <nav >
+            <ul class="pagination justify-content-center"
+                th:with="start= ${T(Math).floor(posts.number/10)*10 +1},
+                            last = (${(posts.totalPages==0)?1: start + 9< posts.totalPages? start + 9: posts.totalPages})">
+                <li  th:if="${start>1}" class="page-item">
+                    <a class="page-link" th:text="<<" th:href="@{/(page=0)}"></a>
+                </li>
+                <li  th:if="${start>1}" class="page-item">
+                    <a class="page-link" th:text="<" th:href="@{/(page=${start-10})}"></a>
+                </li>
+                <li class="page-item" th:each="page: ${#numbers.sequence(start, last)}" th:class="${page == posts.number + 1}?'page-item active'">
+                    <a class="page-link" th:text="${page}" th:href="@{/(page=${page})}"></a>
+                </li>
+                <li th:if="${last < posts.totalPages}">
+                    <a th:href="@{/list?(page=${start + 10})}" th:text="'>'"></a>
+                </li>
+
+                <li th:if="${last < posts.totalPages}">
+                    <a th:href="@{/list?(page=${posts.totalPages-1})}" th:text="'>>'"></a></li>
+                </li>
+
+            </ul>
+        </nav>
     </div>
 </div>
 <div th:replace="fragments/footer :: footer" />
