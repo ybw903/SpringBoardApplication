@@ -29,7 +29,7 @@ public class UserSecurityService implements UserDetailsService {
         BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
         signUpForm.setPassword(passwordEncoder.encode(signUpForm.getPassword()));
 
-        return userRepository.save(signUpForm.toEntity(signUpForm));
+        return userRepository.save(signUpForm.toEntity());
     }
 
     @Override

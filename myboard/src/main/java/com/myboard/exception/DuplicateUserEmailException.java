@@ -5,7 +5,4 @@ public class DuplicateUserEmailException extends RuntimeException{
         super(message);
     }
 
-    public DuplicateUserEmailException(String message, Throwable cause) {
-        super(message, cause);
-    }
 }

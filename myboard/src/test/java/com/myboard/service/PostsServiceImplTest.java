@@ -17,15 +17,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.transaction.annotation.Transactional;
-
-
-import java.util.Arrays;
-import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.*;
@@ -45,20 +39,23 @@ class PostsServiceImplTest {
     @Test
     @DisplayName("존재하지 않는 사용자를 게시글 작성자로 설정한 경우")
     void addPosts() {
-        PostForm postForm = new PostForm();
-        postForm.setTitle("게시글 테스트 제목");
-        postForm.setContent("게시글 테스트 내용");
+        final PostForm postForm = PostForm.builder()
+                .title("게시글 테스트 제목")
+                .content("게시글 테스트 내용")
+                .build();
         given(userRepository.findByEmail(anyString())).willReturn(Optional.empty());
 
         assertThrows(UsernameNotFoundException.class, ()-> postsService.add(postForm,anyString()));
+        verify(userRepository).findByEmail(anyString());
     }
 
     @Test
     @DisplayName("성공적으로 게시물이 추가되는 경우")
     void addPostsSuccess() {
-        PostForm postForm = new PostForm();
-        postForm.setTitle("게시글 테스트 제목");
-        postForm.setContent("게시글 테스트 내용");
+        final PostForm postForm = PostForm.builder()
+                .title("게시글 테스트 제목")
+                .content("게시글 테스트 내용")
+                .build();
         final User user = mock(User.class);
         when(user.getEmail()).thenReturn("test@gmail.com");
         final Posts posts = Posts.builder()
@@ -72,9 +69,11 @@ class PostsServiceImplTest {
         Posts addedPosts = postsService.add(postForm, "");
 
         //TODO: equal method
-        assertThat(addedPosts.getAuthor().getEmail()).isEqualTo(user.getEmail());
+        assertThat(addedPosts.getAuthor()).isEqualTo(posts.getAuthor());
         assertThat(addedPosts.getTitle()).isEqualTo(postForm.getTitle());
-        assertThat(addedPosts.getContent()).isEqualTo(addedPosts.getContent());
+        assertThat(addedPosts.getContent()).isEqualTo(postForm.getContent());
+        verify(userRepository).findByEmail(anyString());
+        verify(postsRepository).save(any(Posts.class));
     }
 
     @Test
@@ -99,12 +98,10 @@ class PostsServiceImplTest {
         verify(postsRepository).findById(anyLong());
     }
 
-
-    public Posts read(Long id) {
-        Posts post = postsRepository.findById(id).orElseThrow(
-                () -> new PostsNotFoundException("delete: Posts not found by : " + id));
-        post.increaseViewCount();
-        return postsRepository.save(post);
+    public Page<Posts> getPosts(Pageable pageable) {
+        int page = (pageable.getPageNumber()==0?0:(pageable.getPageNumber())-1);
+        pageable = PageRequest.of(page, 10);
+        return postsRepository.findAll(pageable);
     }
 
     @Test
@@ -136,6 +133,33 @@ class PostsServiceImplTest {
 
         assertThrows(PostsNotFoundException.class, ()->postsService.read(anyLong()));
         verify(postsRepository).findById(anyLong());
+    }
+
+    @Test
+    @DisplayName("게시글 페이지를 불러오는 경우")
+    void getPosts() {
+        final Page posts = mock(Page.class);
+        final Pageable pageable = mock(Pageable.class);
+        when(pageable.getPageNumber()).thenReturn(0);
+
+        given(postsRepository.findAll(any(Pageable.class))).willReturn(posts);
+
+        Page<Posts> postsByGet = postsService.getPosts(pageable);
+        verify(postsRepository).findAll(any(Pageable.class));
+
+    }
+
+    @Test
+    @DisplayName("게시글 제목을 검색하여 게시글 페이지를 불러오는 경우")
+    void getPostsWithTitle() {
+        final Page posts = mock(Page.class);
+        final Pageable pageable = mock(Pageable.class);
+        when(pageable.getPageNumber()).thenReturn(0);
+
+        given(postsRepository.findByTitleContaining(anyString(), any(Pageable.class))).willReturn(posts);
+
+        Page<Posts> postsByGetWithTitle = postsService.getPostsWithTitle("",pageable);
+        verify(postsRepository).findByTitleContaining(anyString(), any(Pageable.class));
     }
 
     @Test
@@ -184,6 +208,7 @@ class PostsServiceImplTest {
         final Long id = 1L;
         final Posts mockPosts = mock(Posts.class);
         given(postsRepository.findById(id)).willReturn(Optional.of(mockPosts));
+
         postsService.delete(id);
         verify(postsRepository, times(1)).deleteById(anyLong());
         verify(postsRepository, times(2)).findById(anyLong());
