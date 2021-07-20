@@ -30,7 +30,8 @@ public class CommentServiceImpl implements CommentService{
         CommentCreateDto commentCreateDto = null;
         if(commentSaveForm.getCommentId() != null) {
             long supCommentId =commentSaveForm.getCommentId();
-            Comment supComment = commentRepository.getOne(supCommentId);
+            Comment supComment = commentRepository.findById(supCommentId)
+                    .orElseThrow(() -> new CommentNotFoundException("not found comment :" + supCommentId));
             commentCreateDto = new CommentCreateDto(commentSaveForm.getContent(), supComment);
         } else {
             commentCreateDto = new CommentCreateDto(commentSaveForm.getContent(), null);

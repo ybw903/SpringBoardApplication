@@ -24,4 +24,20 @@ class PostsTest {
         //then
         assertThat(afterIncreaseViewCount).isEqualTo(beforeIncreaseViewCount+1);
     }
+
+    @DisplayName("게시글 갱신 테스트")
+    @Test
+    void updatePostsTest() {
+        //given
+        final User user = new User();
+        final Posts posts = Posts.builder()
+                        .title("게시글 제목")
+                        .content("게시글 내용")
+                        .author(user)
+                        .build();
+        final PostUpdateForm postUpdateForm = PostUpdateForm.builder()
+                                                .title("변경된 게시글 제목")
+                                                .content("변경된 게시글 내용")
+                                                .build();
+    }
 }
