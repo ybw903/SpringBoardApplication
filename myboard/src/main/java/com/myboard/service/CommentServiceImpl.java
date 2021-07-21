@@ -54,7 +54,7 @@ public class CommentServiceImpl implements CommentService{
     @Transactional(readOnly = true)
     public List<Comment> getCommentsWithPosts(Long postsId) {
         Posts posts = postsRepository.findById(postsId).orElseThrow(() -> new PostsNotFoundException("delete: Posts not found by : " + postsId));
-        return commentRepository.findAllByPosts(posts);
+        return commentRepository.findAllByPostsOrderByRootCommentAscLevelAsc(posts);
     }
 
     @Override

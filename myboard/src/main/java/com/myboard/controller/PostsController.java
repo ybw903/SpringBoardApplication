@@ -1,5 +1,6 @@
 package com.myboard.controller;
 
+import com.myboard.domain.Comment;
 import com.myboard.domain.Posts;
 import com.myboard.dto.*;
 import com.myboard.security.PrincipalDetails;
@@ -15,6 +16,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.support.SessionStatus;
 
 import javax.validation.Valid;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Controller
 @Slf4j
@@ -28,8 +31,9 @@ public class PostsController {
     @GetMapping("/posts/{id}")
     public String readPost(@PathVariable("id") Long postId,Model model) {
         model.addAttribute("post", PostResponseDto.of(postsService.read(postId)));
+        List<Comment> commentsWithPosts = commentService.getCommentsWithPosts(postId);
         model.addAttribute("comments",
-                CommentResponseDto.collectionOf(commentService.getCommentsWithPosts(postId))
+                commentsWithPosts.stream().map(CommentResponseDto::of).collect(Collectors.toList())
         );
         model.addAttribute("commentSaveForm", new CommentSaveForm());
         return "posts/post";

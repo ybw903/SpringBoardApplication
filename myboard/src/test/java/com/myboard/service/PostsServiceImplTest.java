@@ -57,7 +57,6 @@ class PostsServiceImplTest {
                 .content("게시글 테스트 내용")
                 .build();
         final User user = mock(User.class);
-        when(user.getEmail()).thenReturn("test@gmail.com");
         final Posts posts = Posts.builder()
                             .title(postForm.getTitle())
                             .content(postForm.getContent())

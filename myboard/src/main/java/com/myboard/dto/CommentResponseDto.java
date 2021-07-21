@@ -36,29 +36,29 @@ public class CommentResponseDto {
         return commentResponseDto;
     }
 
-    public static List<CommentResponseDto> collectionOf(List<Comment> comments) {
-        List<CommentResponseDto> commentResponse = new ArrayList<>();
-        Map<Long, CommentResponseDto> map = new HashMap<>();
-        comments.forEach(comment -> {
-            CommentResponseDto dto = CommentResponseDto.of(comment);
-            map.put(dto.getId(), dto);
-
-            Comment superComment = comment.getSuperComment();
-            if(superComment != null) {
-                map.get(superComment.getId())
-                        .getSubComment().add(dto);
-            } else {
-                commentResponse.add(dto);
-            }
-        });
-
-        List<CommentResponseDto> result = new ArrayList<>();
-        commentResponse.forEach(response->{
-            result.add(response);
-            if(!response.getSubComment().isEmpty()) {
-                result.addAll(response.getSubComment());
-            }
-        });
-        return result;
-    }
+//    public static List<CommentResponseDto> collectionOf(List<Comment> comments) {
+//        List<CommentResponseDto> commentResponse = new ArrayList<>();
+//        Map<Long, CommentResponseDto> map = new HashMap<>();
+//        comments.forEach(comment -> {
+//            CommentResponseDto dto = CommentResponseDto.of(comment);
+//            map.put(dto.getId(), dto);
+//
+//            Comment superComment = comment.getSuperComment();
+//            if(superComment != null) {
+//                map.get(superComment.getId())
+//                        .getSubComment().add(dto);
+//            } else {
+//                commentResponse.add(dto);
+//            }
+//        });
+//
+//        List<CommentResponseDto> result = new ArrayList<>();
+//        commentResponse.forEach(response->{
+//            result.add(response);
+//            if(!response.getSubComment().isEmpty()) {
+//                result.addAll(response.getSubComment());
+//            }
+//        });
+//        return result;
+//    }
 }

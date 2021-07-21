@@ -3,7 +3,11 @@ package com.myboard.controller;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.myboard.domain.Posts;
+import com.myboard.dto.CommentResponseDto;
+import com.myboard.dto.CommentSaveForm;
+import com.myboard.dto.PostResponseDto;
 import com.myboard.service.PostsServiceImpl;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -11,6 +15,9 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,6 +26,7 @@ import static org.hamcrest.Matchers.is;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -26,8 +34,35 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WebMvcTest(PostsController.class)
 class PostsControllerMockMVCTest {
 
-//    @Autowired
-//    private MockMvc mockMvc;
+    @Autowired
+    private MockMvc mockMvc;
+
+    @MockBean
+    private PostsServiceImpl postsService;
+
+//    @GetMapping("/posts/{id}")
+//    public String readPost(@PathVariable("id") Long postId, Model model) {
+//        model.addAttribute("post", PostResponseDto.of(postsService.read(postId)));
+//        model.addAttribute("comments",
+//                CommentResponseDto.collectionOf(commentService.getCommentsWithPosts(postId))
+//        );
+//        model.addAttribute("commentSaveForm", new CommentSaveForm());
+//        return "posts/post";
+//    }
+
+//    @DisplayName("게시글을 읽어들이는 요청을 받은 경우")
+//    @Test
+//    void readPostsTest() throws Exception {
+//        final Posts posts = mock(Posts.class);
+//        when(posts.getId()).thenReturn(1L);
+//        when(posts.getTitle()).thenReturn("테스트제목");
+//        when(posts.getContent()).thenReturn("테스트내용");
+//        given(postsService.read(anyLong())).willReturn(posts);
+//
+//        mockMvc.perform(get("/posts/{id}",1L))
+//                .andExpect(status().isOk());
+//    }
+
 //
 //    ObjectMapper mapper = new ObjectMapper();
 //

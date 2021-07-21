@@ -41,11 +41,11 @@ public class Comment {
     private Posts posts;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "super_comment_id")
-    private Comment superComment;
+    @JoinColumn(name = "root_comment_id")
+    private Comment rootComment;
 
-    @OneToMany(mappedBy = "superComment", cascade = CascadeType.ALL)
-    private List<Comment> subComment = new ArrayList<>();
+    @OneToMany(mappedBy = "rootComment", cascade = CascadeType.ALL)
+    private List<Comment> descendantsComment = new ArrayList<>();
 
     private int level;
 
@@ -64,15 +64,17 @@ public class Comment {
 
         if(commentCreateDto.getComment() == null) {
             newComment.level = 1;
+            newComment.rootComment = newComment;
         } else {
             Comment supComment = commentCreateDto.getComment();
             log.info(supComment.toString());
             if(supComment.isDeleted) {
                 throw new CommentGoneException("SuperComment is already deleted");
             }
+            Comment rootComment = supComment.getRootComment();
             newComment.level = supComment.getLevel()+1;
-            newComment.superComment = supComment;
-            supComment.getSubComment().add(newComment);
+            newComment.rootComment = rootComment;
+            rootComment.getDescendantsComment().add(newComment);
         }
         newComment.content = commentCreateDto.getContent();
         newComment.posts = posts;

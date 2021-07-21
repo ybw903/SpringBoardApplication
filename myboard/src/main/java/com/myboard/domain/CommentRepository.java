@@ -6,6 +6,6 @@ import java.util.List;
 
 public interface CommentRepository extends JpaRepository<Comment, Long> {
 
-    List<Comment> findAllByPosts(Posts posts);
+    List<Comment> findAllByPostsOrderByRootCommentAscLevelAsc(Posts posts);
 
 }
