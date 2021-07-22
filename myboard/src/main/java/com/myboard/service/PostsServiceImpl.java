@@ -1,9 +1,6 @@
 package com.myboard.service;
 
-import com.myboard.domain.Posts;
-import com.myboard.domain.PostsRepository;
-import com.myboard.domain.User;
-import com.myboard.domain.UserRepository;
+import com.myboard.domain.*;
 import com.myboard.dto.PostForm;
 import com.myboard.dto.PostUpdateForm;
 import com.myboard.exception.PostsNotFoundException;
@@ -16,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -24,8 +22,12 @@ public class PostsServiceImpl implements PostsService{
     static final boolean DELETE_SUCCESS = true;
     static final boolean DELETE_FAILED = false;
 
+    static final boolean LIKE_ADD = true;
+    static final boolean LIKE_CANCEL = false;
+
     private final PostsRepository postsRepository;
     private final UserRepository userRepository;
+    private final LikeRepository likeRepository;
 
     @Override
     @Transactional
@@ -91,5 +93,25 @@ public class PostsServiceImpl implements PostsService{
             return DELETE_SUCCESS;
         else
             return DELETE_FAILED;
+    }
+
+    @Override
+    @Transactional
+    public boolean like(Long postsId, String email) {
+        Posts posts = postsRepository.findById(postsId).orElseThrow(
+                () -> new PostsNotFoundException("update: Posts not found by :" + postsId));
+        User user = userRepository.findByEmail(email).orElseThrow(
+                () -> new UsernameNotFoundException("사용자 이메일을 찾을 수 없습니다."));
+        Optional<Like> likeByPostsAndUser = likeRepository.findByPostsAndUser(posts, user);
+        if(likeByPostsAndUser.isPresent()) {
+            Like like =likeByPostsAndUser.get();
+            likeRepository.delete(like);
+            return LIKE_CANCEL;
+        }
+        Like like = new Like();
+        like.mappingPosts(posts);
+        like.mappingUser(user);
+        likeRepository.save(like);
+        return LIKE_ADD;
     }
 }

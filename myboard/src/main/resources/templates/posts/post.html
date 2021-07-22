@@ -11,7 +11,7 @@
                     <div th:text="${post.author}" style="font-size: 14px"></div>
                     <div th:text="${#temporals.format(post.createdDateTime, 'yyyy-MM-dd HH:mm:ss')}" style="font-size: 12px; color:#ccc"></div>
                 </div>
-                <div>
+                <div th:if="${post.author.equals(user)}">
                     <a th:href="@{/posts/{id}/edit (id=${post.id})}" >수정</a>
                     <a th:href="@{/posts/{id}/delete (id=${post.id})}" >삭제</a>
                 </div>
@@ -20,6 +20,12 @@
                 <h2 class="panel-title" th:text="${post.title}"></h2>
                 <hr/>
                 <article class="content-text" th:utext="${post.content}"></article>
+                <div class="text-center">
+                    <form th:action="@{/posts/{postsId}/like (postsId=${post.id})}"  method="post">
+                        <input type="hidden" th:name="postId" th:value="${post.id}">
+                        <button type="submit" class="btn btn-primary">Like</button>
+                    </form>
+                </div>
             </div>
         </div>
         <div class="card">

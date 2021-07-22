@@ -14,5 +14,6 @@ public interface PostsService {
     Page<Posts> getPosts(Pageable pageable);
     Page<Posts> getPostsWithTitle( String title,Pageable pageable);
     Posts update(Long id, PostUpdateForm postUpdateForm);
+    boolean like(Long postsId, String email);
     boolean delete(Long id);
 }

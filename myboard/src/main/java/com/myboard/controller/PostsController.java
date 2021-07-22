@@ -8,6 +8,7 @@ import com.myboard.service.CommentService;
 import com.myboard.service.PostsService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.access.AuthorizationServiceException;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -17,6 +18,8 @@ import org.springframework.web.bind.support.SessionStatus;
 
 import javax.validation.Valid;
 import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Controller
@@ -29,7 +32,8 @@ public class PostsController {
     private final CommentService commentService;
 
     @GetMapping("/posts/{id}")
-    public String readPost(@PathVariable("id") Long postId,Model model) {
+    public String readPost(@PathVariable("id") Long postId,Model model, @AuthenticationPrincipal PrincipalDetails principalDetails) {
+        model.addAttribute("user", Objects.isNull(principalDetails)?"":principalDetails.getUsername());
         model.addAttribute("post", PostResponseDto.of(postsService.read(postId)));
         List<Comment> commentsWithPosts = commentService.getCommentsWithPosts(postId);
         model.addAttribute("comments",
@@ -74,19 +78,35 @@ public class PostsController {
     public String updatePost(@PathVariable("postId") Long postId,
                              @Valid PostUpdateForm postUpdateForm,
                              BindingResult result,
-                             SessionStatus sessionStatus) {
+                             SessionStatus sessionStatus,
+                             @AuthenticationPrincipal PrincipalDetails principalDetails) {
+        Posts posts = postsService.findPost(postId);
+        String email = principalDetails.getUsername();
+        if(!posts.getAuthor().getEmail().equals(email))
+            return "redirect:/posts/"+postId;
+
         if(result.hasErrors()) {
             return "/posts/editPostForm";
         }
+
         postsService.update(postId, postUpdateForm);
         sessionStatus.setComplete();
         return "redirect:/posts/"+postId;
     }
 
     @GetMapping("/posts/{postId}/delete")
-    public String deletePost(@PathVariable("postId") Long postId) {
+    public String deletePost(@PathVariable("postId") Long postId, @AuthenticationPrincipal PrincipalDetails principalDetails) {
+        Posts posts = postsService.findPost(postId);
+        String email = principalDetails.getUsername();
+        if(!posts.getAuthor().getEmail().equals(email))
+            return "redirect:/";
         postsService.delete(postId);
         return "redirect:/";
     }
 
+    @PostMapping("/posts/{postsId}/like")
+    public String likePost(@PathVariable("postsId") Long postId, @AuthenticationPrincipal PrincipalDetails principalDetails) {
+        postsService.like(postId, principalDetails.getUsername());
+        return "redirect:/posts/" + postId;
+    }
 }

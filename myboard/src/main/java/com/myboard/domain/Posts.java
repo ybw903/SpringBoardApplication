@@ -32,7 +32,6 @@ public class Posts {
     @Column(columnDefinition = "TEXT", nullable = false)
     private String content;
 
-
     int viewCount;
 
     @ManyToOne
@@ -63,5 +62,9 @@ public class Posts {
 
     public void increaseViewCount() {
         viewCount++;
+    }
+
+    public void mappingLike(Like like) {
+        this.likes.add(like);
     }
 }
