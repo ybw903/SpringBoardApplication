@@ -106,12 +106,25 @@ public class PostsServiceImpl implements PostsService{
         if(likeByPostsAndUser.isPresent()) {
             Like like =likeByPostsAndUser.get();
             likeRepository.delete(like);
+            posts.discountLike(like);
             return LIKE_CANCEL;
         }
         Like like = new Like();
         like.mappingPosts(posts);
         like.mappingUser(user);
+        posts.updateLikeCount();
         likeRepository.save(like);
         return LIKE_ADD;
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public boolean isLike(Long postsId, String email) {
+        Posts posts = postsRepository.findById(postsId).orElseThrow(
+                () -> new PostsNotFoundException("update: Posts not found by :" + postsId));
+        User user = userRepository.findByEmail(email).orElseThrow(
+                () -> new UsernameNotFoundException("사용자 이메일을 찾을 수 없습니다."));
+        Optional<Like> likeByPostsAndUser = likeRepository.findByPostsAndUser(posts, user);
+        return likeByPostsAndUser.isPresent();
     }
 }

@@ -16,4 +16,5 @@ public interface PostsService {
     Posts update(Long id, PostUpdateForm postUpdateForm);
     boolean like(Long postsId, String email);
     boolean delete(Long id);
+    public boolean isLike(Long postsId, String email);
 }

@@ -1,5 +1,6 @@
 package com.myboard.dto;
 
+import com.myboard.domain.Like;
 import com.myboard.domain.Posts;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -16,6 +17,7 @@ public class PostResponseDto {
     private String content;
     private int viewCount;
     private String author;
+    private int likeCount;
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime createdDateTime;
 
@@ -25,6 +27,7 @@ public class PostResponseDto {
         postResponseDto.setTitle(posts.getTitle());
         postResponseDto.setContent(posts.getContent());
         postResponseDto.setViewCount(posts.getViewCount());
+        postResponseDto.setLikeCount(posts.getLikeCount());
         postResponseDto.setAuthor(posts.getAuthor().getEmail());
         postResponseDto.setCreatedDateTime(posts.getCreatedDateTime());
         return postResponseDto;

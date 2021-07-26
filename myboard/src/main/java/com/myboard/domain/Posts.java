@@ -34,6 +34,8 @@ public class Posts {
 
     int viewCount;
 
+    int likeCount;
+
     @ManyToOne
     @JoinColumn(name="user_id")
     private User author;
@@ -66,5 +68,14 @@ public class Posts {
 
     public void mappingLike(Like like) {
         this.likes.add(like);
+    }
+
+    public void updateLikeCount() {
+        this.likeCount = this.likes.size();
+    }
+
+    public void discountLike(Like like) {
+        this.likes.remove(like);
+        updateLikeCount();
     }
 }

@@ -33,12 +33,14 @@ public class PostsController {
 
     @GetMapping("/posts/{id}")
     public String readPost(@PathVariable("id") Long postId,Model model, @AuthenticationPrincipal PrincipalDetails principalDetails) {
-        model.addAttribute("user", Objects.isNull(principalDetails)?"":principalDetails.getUsername());
+        String email = Objects.isNull(principalDetails)?"":principalDetails.getUsername();
+        model.addAttribute("user", email);
         model.addAttribute("post", PostResponseDto.of(postsService.read(postId)));
         List<Comment> commentsWithPosts = commentService.getCommentsWithPosts(postId);
         model.addAttribute("comments",
                 commentsWithPosts.stream().map(CommentResponseDto::of).collect(Collectors.toList())
         );
+        model.addAttribute("isLike", postsService.isLike(postId, email));
         model.addAttribute("commentSaveForm", new CommentSaveForm());
         return "posts/post";
     }

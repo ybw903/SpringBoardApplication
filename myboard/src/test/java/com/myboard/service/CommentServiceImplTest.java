@@ -62,9 +62,11 @@ class CommentServiceImplTest {
         commentSaveForm.setCommentId(1L);
         final Posts posts = mock(Posts.class);
         final User user = mock(User.class);
-        final Comment comment = mock(Comment.class);
+        final Comment supComment = mock(Comment.class);
 
-        given(commentRepository.findById(anyLong())).willReturn(Optional.of(comment));
+        when(supComment.getRootComment()).thenReturn(supComment);
+
+        given(commentRepository.findById(anyLong())).willReturn(Optional.of(supComment));
         given(postsRepository.findById(anyLong())).willReturn(Optional.of(posts));
         given(userRepository.findByEmail(anyString())).willReturn(Optional.of(user));
 
@@ -139,13 +141,13 @@ class CommentServiceImplTest {
         final Posts posts = mock(Posts.class);
         when(comments.get(0)).thenReturn(comment);
         given(postsRepository.findById(anyLong())).willReturn(Optional.of(posts));
-        given(commentRepository.findAllByPosts(posts)).willReturn(comments);
+        given(commentRepository.findAllByPostsOrderByRootCommentAscLevelAsc(posts)).willReturn(comments);
 
         List<Comment> commentsByGetCommentWithPosts =  commentService.getCommentsWithPosts(1L);
 
         assertThat(commentsByGetCommentWithPosts.get(0)).isEqualTo(comments.get(0));
         verify(postsRepository).findById(anyLong());
-        verify(commentRepository).findAllByPosts(any(Posts.class));
+        verify(commentRepository).findAllByPostsOrderByRootCommentAscLevelAsc(any(Posts.class));
     }
     
     @DisplayName("존재하지 않는 게시글의 댓글들을 조회하는 경우, 예외 발생")
