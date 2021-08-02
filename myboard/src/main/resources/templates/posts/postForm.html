@@ -4,7 +4,7 @@
 <body>
 <div th:replace="fragments/bodyHeader :: bodyHeader"/>
 <div class="content-wrapper">
-    <div class="container">
+    <div class="container content">
         <form th:action="@{/posts/new}" th:object="${postForm}" method="post">
 
             <div class="form-group"><label th:for="name">제목</label>
